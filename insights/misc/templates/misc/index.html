@@ -1,6 +1,7 @@
 <html>
     <body>
         {% if request.user.is_authenticated %}
+            <a href="add-repo">Add a repo</a>
             <a href="logout">Logout</a>
         {% else %}
             <a href="{{ loginURL }}">Login</a>

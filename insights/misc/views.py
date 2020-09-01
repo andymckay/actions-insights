@@ -13,6 +13,7 @@ import time
 import requests
 from django.contrib.auth.decorators import login_required
 
+
 def index(request):
     base = "https://github.com/login/oauth/authorize?"
     data = {
@@ -33,6 +34,7 @@ def logout_view(request):
     logout(request)
     return redirect("/")
 
+
 @login_required
 def add_repo(request):
     if request.POST:
@@ -45,22 +47,24 @@ def add_repo(request):
         "https://api.github.com/user/installations",
         headers={
             "Authorization": "token %s" % access,
-            "Accept": "application/vnd.github.machine-man-preview+json"
-        }
+            "Accept": "application/vnd.github.machine-man-preview+json",
+        },
     )
     res.raise_for_status()
 
     data = res.json()
-    for installation in data['installations']:
+    for installation in data["installations"]:
         res = requests.get(
-            "https://api.github.com/user/installations/%s/repositories" % installation["id"],
-        headers={
-            "Authorization": "token %s" % access,
-            "Accept": "application/vnd.github.machine-man-preview+json"
-        })
+            "https://api.github.com/user/installations/%s/repositories"
+            % installation["id"],
+            headers={
+                "Authorization": "token %s" % access,
+                "Accept": "application/vnd.github.machine-man-preview+json",
+            },
+        )
         res.raise_for_status()
         repo_data = res.json()
-        for repository in repo_data['repositories']:
+        for repository in repo_data["repositories"]:
             repos.append(repository["full_name"])
 
     context = {"repos": repos}
@@ -82,6 +86,7 @@ def oauth(request):
     data = res.json()
 
     if not "access_token" in data:
+        print("Something went wrong here")
         return redirect("/")
 
     access_token = data["access_token"]
@@ -105,6 +110,7 @@ def oauth(request):
         user = User.objects.create_user("github:" + data["login"])
 
     token = Token.objects.get_or_create(user=user)[0]
+    print("Access token updated.")
     token.access = access_token
     token.save()
 
@@ -122,7 +128,10 @@ def show_repo(request, pk):
 @login_required
 def artifacts(request, pk):
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
-    context = {"repo": repo, "artifacts": Artifact.objects.filter(run__workflow__repo=repo)}
+    context = {
+        "repo": repo,
+        "artifacts": Artifact.objects.filter(run__workflow__repo=repo),
+    }
     return render(request, "misc/artifacts.html", context)
 
 

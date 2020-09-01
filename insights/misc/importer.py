@@ -12,9 +12,14 @@ def import_repo(request, pk):
     log = []
     log.append("Getting access.")
     g = Github(access)
+
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
     log.append("Got repo: %s" % repo.nwo)
+
     repo_from_api = g.get_repo(repo.nwo)
+    repo.public = not repo_from_api.private
+    repo.save()
+
     for workflow_from_api in repo_from_api.get_workflows().get_page(0):
         workflow = Workflow.objects.get_or_create(
             workflow_id=workflow_from_api.id, repo=repo
@@ -53,7 +58,7 @@ def import_repo(request, pk):
                 artifact = Artifact.objects.get_or_create(
                     artifact_id=artifact_from_api["id"], run=run
                 )[0]
-                artifact.created_at = datetime.datetime.strptime(
+                artifact.created = datetime.datetime.strptime(
                     artifact_from_api["created_at"], "%Y-%m-%dT%H:%M:%SZ"
                 )
                 artifact.expired = artifact_from_api["expired"]

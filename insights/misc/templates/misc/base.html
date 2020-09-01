@@ -8,17 +8,30 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="collapse navbar-collapse" id="navbarSupportedContent"><a href="/">Home</a></div>
-        {% if request.user.is_authenticated %}
-            <div class="collapse navbar-collapse" id="navbarSupportedContent"><a href="/logout">Logout</a></div>
-        {% else %}
-            <div class="collapse navbar-collapse" id="navbarSupportedContent"><a href="/loginURL">Login</a></div>
-        {% endif %}
-    </nav>
+    <header>
+        <div class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container d-flex justify-content-between">
+                <a href="/" class="navbar-brand d-flex align-items-center">
+                    <strong>GitHub Actions Insights</strong>
+                </a>
+            </div>
+        </div>
+        <div class="container p-3">
+            <a href="/">Home</a> &bull;
+            {% if request.user.is_authenticated %}
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="{{ loginURL }}">Login</a>
+            {% endif %}
+        </div>
+    </header>
 
-    <div id="content" class="container">
-        {% block content %}{% endblock %}
-    </div>
+
+
+    <main role="main">
+        <div id="content" class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
 </body>
 </html>

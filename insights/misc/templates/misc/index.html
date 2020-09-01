@@ -2,11 +2,28 @@
 
 {% block content %}
     {% if request.user.is_authenticated %}
-        {% for repo in repos %}
-            <p>{{ repo.nwo }} <a href="{% url "show-repo" repo.id %}">Import</a> | <a href="{% url "artifacts" repo.id %}">Artifacts</a> |  <a href="{% url "runs" repo.id %}">Runs</a></p>
-        {% endfor %}
+        <table class="table">
+             <tbody>
+                {% for repo in repos %}
+                <tr>
+                    <td>{{ repo.nwo }}
+                        {% if repo.public %}
+                            <span class="badge badge-info">public</span>
+                        {% else %}
+                            <span class="badge badge-warning">private</span>
+                        {% endif %}
+                    </td>
+                    <td><a href="{% url "artifacts" repo.id %}">Artifacts</a></td>
+                    <td><a href="{% url "runs" repo.id %}">Runs</a></td>
+                    <td><a href="{% url "show-repo" repo.id %}">Import</a></td>
+                </tr>
+                {% endfor %}
+             </tbody>
+        </table>
         <a href="add-repo" class="btn btn-primary">Add a repo</a>
     {% else %}
-        <p>👋 Welcome to <b>Actions Insights</b>. First you'll need to <a href="{{ loginURL }}">login</a>.</p>
+        <section class="jumbotron text-center">
+            <h1>👋 Actions Insights</h1>
+            <p>This is a test playground app that probably doesn't work to try and get you insights into your Actions data. Maybe. First you'll need to <a href="{{ loginURL }}">login</a>.</p>
     {% endif %}
 {% endblock %}

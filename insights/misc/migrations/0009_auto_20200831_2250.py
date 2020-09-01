@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('misc', '0008_auto_20200831_2204'),
+        ("misc", "0008_auto_20200831_2204"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='artifact',
-            name='size_in_bytes',
+            model_name="artifact",
+            name="size_in_bytes",
             field=models.IntegerField(null=True),
         ),
     ]

@@ -1,19 +1,15 @@
-import time
 import uuid
 from urllib.parse import urlencode
 
-import jwt
 import requests
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template import loader
-from github import Github, GithubIntegration
 
-from insights.settings import APP_ID, CLIENT_ID, CLIENT_SECRET, HOST
+from insights.settings import CLIENT_ID, CLIENT_SECRET, HOST
 from misc.importer import import_repo
 from misc.models import Artifact, Repo, Run, Token, Workflow
 from misc.utils import request_headers

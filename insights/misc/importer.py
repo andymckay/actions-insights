@@ -2,7 +2,7 @@ import datetime
 
 import requests
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 from github import Github
 
 from misc.models import Artifact, Repo, Run, Token, Workflow

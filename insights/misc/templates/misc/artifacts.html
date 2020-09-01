@@ -54,7 +54,8 @@
                 <td>
                     {% if not artifact.expired %}
                         <a href="{% url "download" artifact.pk %}">Download</a> &bull;
-                        <a href="{% url "delete" artifact.pk %}">Delete</a>
+                        <a href="{% url "delete" artifact.pk %}">Delete</a> &bull;
+                        <a href="{% url "runs" artifact.run.workflow.repo.id %}">Runs</a>
                     {% endif %}
                 </td>
             </tr>

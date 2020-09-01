@@ -1,11 +1,39 @@
 {% extends "misc/base.html" %}
 
 {% block content %}
-    {% for repo in repos %}
-    <form action="{% url "add-repo" %}" method="post">
-        {% csrf_token %}
-        {{ repo }}<input type="hidden" name="repo" value="{{ repo }}">
-        <input type="submit" value="Add">
-    </form>
-    {% endfor %}
+    <div>
+        <p>Repositories the <code>Actions Insight</code> app is installed on.</p>
+    </div>
+    {% if toAdd or added %}
+        {% if toAdd %}
+            <h4>Ready to add</h4>
+            <table>
+                <tbody>
+                    {% for repo in toAdd %}
+                        <tr>
+                            <td><code>{{ repo.full_name }}</code></td>
+                            <td>
+                                <form action="{% url "add-repo" %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="repo" value="{{ repo.repo.full_name }}">
+                                    <input class="btn btn-primary" type="submit" value="Add and import">
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        {% if added %}
+            <h4>Already added</h4>
+            {% for repo in added %}
+                <code>{{ repo.full_name }}</code><br/>
+            {% endfor %}
+        {% endif %}
+    {% else %}
+        <section class="jumbotron text-center">
+            <h1>👋 No repositories</h1>
+            <p>Please <a href="https://github.com/apps/actions-insights-beta">add the app to your repository</a>.</p>
+        </section>
+    {% endif %}
 {% endblock %}

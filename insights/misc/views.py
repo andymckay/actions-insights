@@ -12,7 +12,7 @@ import jwt
 import time
 import requests
 from django.contrib.auth.decorators import login_required
-
+from misc.importer import import_repo
 
 def index(request):
     base = "https://github.com/login/oauth/authorize?"
@@ -42,8 +42,8 @@ def logout_view(request):
 @login_required
 def add_repo(request):
     if request.POST:
-        repo = Repo.objects.get_or_create(nwo=request.POST["repo"], user=request.user)
-        return redirect("/")
+        repo = Repo.objects.get_or_create(nwo=request.POST["repo"], user=request.user)[0]
+        return import_repo(request, repo.pk)
 
     repos = []
     access = Token.objects.get(user=request.user).access
@@ -56,6 +56,8 @@ def add_repo(request):
     )
     res.raise_for_status()
 
+    added = []
+    toAdd = []
     data = res.json()
     for installation in data["installations"]:
         res = requests.get(
@@ -69,9 +71,12 @@ def add_repo(request):
         res.raise_for_status()
         repo_data = res.json()
         for repository in repo_data["repositories"]:
-            repos.append(repository["full_name"])
+            if Repo.objects.filter(user=request.user, nwo=repository["full_name"]).exists():
+                added.append(repository)
+            else:
+                toAdd.append(repository)
 
-    context = {"repos": repos}
+    context = {"added": added, "toAdd": toAdd}
     return render(request, "misc/add-repo.html", context)
 
 

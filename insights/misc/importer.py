@@ -15,7 +15,6 @@ def import_repo(request, pk):
 
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
     log.append("Got repo: %s" % repo.nwo)
-
     repo_from_api = g.get_repo(repo.nwo)
     repo.public = not repo_from_api.private
     repo.save()

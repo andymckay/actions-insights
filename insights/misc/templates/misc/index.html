@@ -1,6 +1,9 @@
 <html>
     <body>
         {% if request.user.is_authenticated %}
+            {% for repo in repos %}
+                {{ repo.nwo }} <a href="{% url "show-repo" repo.id %}">Import</a> | <a href="{% url "artifacts" repo.id %}">Artifacts</a> |  <a href="{% url "runs" repo.id %}">Runs</a>
+            {% endfor %}
             <a href="add-repo">Add a repo</a>
             <a href="logout">Logout</a>
         {% else %}

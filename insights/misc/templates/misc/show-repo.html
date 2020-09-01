@@ -1,0 +1,6 @@
+{{ repo.nwo }}
+
+<form action="{% url "import-repo" repo.id %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Import data">
+</form>

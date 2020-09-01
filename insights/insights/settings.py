@@ -112,7 +112,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -120,7 +120,11 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-
+# Yeah
+APP_ID = 79072
 CLIENT_ID = "Iv1.24363a764c2c6ede"
 CLIENT_SECRET = "3fcf7108f7183296da46f78180e21ffbc4ca1067"
 HOST = "https://insights.ngrok.io"
+import os
+FILE_SYSTEM_ROOT = os.getcwd()
+print(FILE_SYSTEM_ROOT)

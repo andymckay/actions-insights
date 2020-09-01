@@ -1,0 +1,10 @@
+<html>
+    <body>
+        <h1>Add repo</h1>
+        <form action="{% url "add-repo" %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="repo" placeholder="name/owner">
+            <input type="submit" value="Add">
+        </form>
+    </body>
+</html>

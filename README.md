@@ -4,6 +4,7 @@ Installation:
 ```
 pip3 install -r requirements.txt
 cd insights
+source .env
 python3 manage.py runserver
 ```
 

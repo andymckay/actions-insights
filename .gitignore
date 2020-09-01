@@ -1,3 +1,4 @@
 *.pyc
+insights/.env
 insights/private-key.pem
 insights/db.sqlite3

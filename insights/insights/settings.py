@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "jg@k6u)ix5j&x-1-nt9unmos=-y0d^x)@ei@-m1!ska2b7jd^*"
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -126,7 +126,7 @@ STATICFILES_DIRS = [
 # Yeah right, secrets.
 APP_ID = 79072
 CLIENT_ID = "Iv1.24363a764c2c6ede"
-CLIENT_SECRET = "3fcf7108f7183296da46f78180e21ffbc4ca1067"
+CLIENT_SECRET = os.getenv("ACTIONS_INSIGHTS_SECRET")
 HOST = "https://insights.ngrok.io"
 
 LOGIN_URL = "/"

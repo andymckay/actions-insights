@@ -19,7 +19,7 @@
                 <td>{{ run.elapsed }}</td>
                 <td>{{ run.conclusion }}</td>
                 <td>{% if run.total_artifact_size != None %}
-                    {{ run.total_artifact_size }} bytes
+                    {{ run.total_artifact_size|filesizeformat }}
                 {% endif %}
                 </td>
             </tr>

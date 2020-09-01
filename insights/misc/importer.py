@@ -1,9 +1,11 @@
-from django.shortcuts import get_object_or_404, render, redirect
-from misc.models import Repo, Token, Workflow, Run, Artifact
-from github import Github
-import requests
 import datetime
+
+import requests
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+from github import Github
+
+from misc.models import Artifact, Repo, Run, Token, Workflow
 
 
 @login_required

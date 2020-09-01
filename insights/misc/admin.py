@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Repo, Workflow, Token, Run, Artifact
+from .models import Artifact, Repo, Run, Token, Workflow
 
 admin.site.register(Repo)
 admin.site.register(Workflow)

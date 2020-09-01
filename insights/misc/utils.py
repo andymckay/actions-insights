@@ -1,5 +1,6 @@
-from .models import Token
 from django.shortcuts import render
+
+from .models import Token
 
 
 def request_headers(user):

@@ -1,7 +1,8 @@
+import datetime
+
 from django import template
 
 register = template.Library()
-import datetime
 
 
 @register.filter(name="expiration")

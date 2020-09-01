@@ -15,7 +15,7 @@
                             <td>
                                 <form action="{% url "add-repo" %}" method="post">
                                     {% csrf_token %}
-                                    <input type="hidden" name="repo" value="{{ repo.repo.full_name }}">
+                                    <input type="hidden" name="repo" value="{{ repo.full_name }}">
                                     <input class="btn btn-primary" type="submit" value="Add and import">
                                 </form>
                             </td>

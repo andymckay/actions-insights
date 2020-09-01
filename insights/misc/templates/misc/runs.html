@@ -1,7 +1,21 @@
 {% extends "misc/base.html" %}
 
 {% block content %}
-    {% for run in runs %}
-        {{ run.id }}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Workflow</th>
+            <th>Created</th>
+            <th>Conclusion</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for run in runs %}
+            <tr>
+                <td>{{ run.workflow.name }}</td>
+                <td>{{ run.start_time }}</td>
+                <td>{{ run.conclusion }}</td>
+            </tr>
     {% endfor %}
+    </tbody>
 {% endblock %}

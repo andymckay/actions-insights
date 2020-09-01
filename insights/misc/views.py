@@ -161,5 +161,6 @@ def artifacts(request, pk):
 @login_required
 def runs(request, pk):
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
-    context = {"repo": repo, "runs": Run.objects.filter(workflow__repo=repo)}
+    order = ["-start_time"]
+    context = {"repo": repo, "runs": Run.objects.filter(workflow__repo=repo).order_by(*order)}
     return render(request, "misc/runs.html", context)

@@ -3,7 +3,7 @@ from django.template import loader
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from insights.settings import APP_ID, CLIENT_ID, CLIENT_SECRET, HOST
-from misc.models import Repo, Token, Artifact, Run
+from misc.models import Repo, Token, Artifact, Run, Workflow
 from github import GithubIntegration
 from github import Github
 from urllib.parse import urlencode
@@ -22,9 +22,13 @@ def index(request):
         "scope": "user",
         "redirect_uri": HOST + "/oauth/redirect",
     }
-    context = {"loginURL": base + urlencode(data)}
+    context = {"loginURL": base + urlencode(data), "repos": None, "counts": {}}
     if request.user.is_authenticated:
         context["repos"] = Repo.objects.filter(user=request.user)
+        for repo in context["repos"]:
+            repo.workflow_count = Workflow.objects.filter(repo=repo).count()
+            repo.run_count = Run.objects.filter(workflow__repo=repo).count()
+            repo.artifact_count = Artifact.objects.filter(run__workflow__repo=repo).count()
 
     return render(request, "misc/index.html", context)
 

@@ -1,7 +1,28 @@
 {% extends "misc/base.html" %}
 
+
 {% block content %}
-    {% for artifact in artifacts %}
-    {{ artifact.id }}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Created</th>
+            <th>Size</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for artifact in artifacts %}
+            <tr>
+                <td>{{ artifact.name }}
+                    {% if artifact.expired %}
+                        <span class="badge badge-warning">expired</span>
+                    {% endif %}
+                </td>
+                <td>{{ artifact.created_at }}</td>
+                <td>{{ artifact.size_in_bytes }} bytes</td>
+                <td><a href="{{ artifact.download }}">Download</a></td>
+            </tr>
     {% endfor %}
+    </tbody>
 {% endblock %}

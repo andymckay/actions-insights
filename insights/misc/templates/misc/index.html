@@ -22,7 +22,7 @@
                     </td>
                     <td>
                         <a href="{% url "artifacts" repo.id %}">Artifacts</a>
-                        <span class="badge badge-{% if repo.workflow_count %}success{% else %}warning{% endif %}">{{ repo.workflow_count }}</span>
+                        <span class="badge badge-{% if repo.artifact_count %}success{% else %}warning{% endif %}">{{ repo.artifact_count }}</span>
                     </td>
                     <td>
                         <a href="{% url "runs" repo.id %}">Runs</a>

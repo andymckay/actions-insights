@@ -15,7 +15,7 @@ import requests
 from django.contrib.auth.decorators import login_required
 from misc.importer import import_repo
 from django.db.models import Sum
-from misc.utils import get_access_token_for_user
+from misc.utils import request_headers
 from django.http import HttpResponse
 
 def index(request):
@@ -165,20 +165,24 @@ def artifacts(request, pk):
 @login_required
 def download(request, pk):
     artifact = get_object_or_404(Artifact, pk=pk, run__workflow__repo__user=request.user)
-    res = requests.get(
-        artifact.download,
-        headers={
-            "Authorization": "token %s" % get_access_token_for_user(request.user),
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        },
-    )
+    res = requests.get(artifact.download, headers=request_headers(request.user))
     res.raise_for_status()
     response = HttpResponse(res.content, content_type=res.headers['Content-Type'])
     response['Content-Disposition'] = res.headers['Content-Disposition']
     return response
 
 
+@login_required
+def delete(request, pk):
+    artifact = get_object_or_404(Artifact, pk=pk, run__workflow__repo__user=request.user)
+    repo = artifact.run.workflow.repo
+    res = requests.delete(
+        "https://api.github.com/repos/%s/actions/artifacts/%s" % (repo.nwo, artifact.artifact_id),
+        headers=request_headers(request.user)
+    )
+    res.raise_for_status()
+    artifact.delete()
+    return redirect('/artifacts/%s?msg=artifact-deleted' % repo.id)
 
 @login_required
 def runs(request, pk):

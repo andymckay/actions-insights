@@ -30,6 +30,12 @@
 
     <main role="main">
         <div id="content" class="container">
+            {% if request.GET.msg %}
+                {% if request.GET.msg == "artifact-deleted" %}
+                    <div class="alert alert-danger">Artifact successfully deleted.</div>
+                {% endif %}
+            {% endif %}
+
             {% block content %}{% endblock %}
         </div>
     </main>

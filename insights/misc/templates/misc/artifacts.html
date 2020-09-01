@@ -28,7 +28,6 @@
     </div>
 </div>
 
-
 <table class="table">
     <thead>
         <tr>
@@ -52,7 +51,12 @@
                     {% endif %}
                 </td>
                 <td>{{ artifact.size_in_bytes|filesizeformat }}</td>
-                <td>{% if not artifact.expired %}<a href="{% url "download" artifact.pk %}">Download</a>{% endif %}</td>
+                <td>
+                    {% if not artifact.expired %}
+                        <a href="{% url "download" artifact.pk %}">Download</a> &bull;
+                        <a href="{% url "delete" artifact.pk %}">Delete</a>
+                    {% endif %}
+                </td>
             </tr>
     {% endfor %}
     </tbody>

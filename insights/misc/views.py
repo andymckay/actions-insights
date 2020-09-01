@@ -13,6 +13,8 @@ import time
 import requests
 from django.contrib.auth.decorators import login_required
 from misc.importer import import_repo
+from django.db.models import Sum
+
 
 def index(request):
     base = "https://github.com/login/oauth/authorize?"
@@ -154,6 +156,8 @@ def artifacts(request, pk):
     context = {
         "repo": repo,
         "artifacts": Artifact.objects.filter(**kwargs).order_by(*order),
+        "number": Artifact.objects.filter(run__workflow__repo=repo, expired=False).count(),
+        "size": Artifact.objects.filter(run__workflow__repo=repo, expired=False).aggregate(Sum('size_in_bytes')),
     }
     return render(request, "misc/artifacts.html", context)
 

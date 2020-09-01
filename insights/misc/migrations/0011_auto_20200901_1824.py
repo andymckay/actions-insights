@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('misc', '0010_repo_public'),
+        ("misc", "0010_repo_public"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='artifact',
-            name='expired',
+            model_name="artifact",
+            name="expired",
             field=models.BooleanField(default=True),
         ),
     ]

@@ -21,5 +21,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 ]
 
-handler404 = 'misc.utils.handler404'
-handler500 = 'misc.utils.handler500'
+handler404 = "misc.utils.handler404"
+handler500 = "misc.utils.handler500"

@@ -16,6 +16,7 @@
                     <td><a href="{% url "artifacts" repo.id %}">Artifacts</a></td>
                     <td><a href="{% url "runs" repo.id %}">Runs</a></td>
                     <td><a href="{% url "show-repo" repo.id %}">Import</a></td>
+                    <td><a href="https://github.com/{{ repo.nwo }}">View on GitHub</a></td>
                 </tr>
                 {% endfor %}
              </tbody>

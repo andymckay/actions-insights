@@ -2,6 +2,12 @@
 
 
 {% block content %}
+
+<div class="m-3">
+    <a class="btn btn-outline-danger" href="?filter=expired-only">Show expired only</a></button>
+    <a class="btn btn-outline-success" href="?filter=active-only">Show Active only</a></button>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -16,7 +22,7 @@
             <tr>
                 <td>{{ artifact.name }}
                     {% if artifact.expired %}
-                        <span class="badge badge-warning">expired</span>
+                        <span class="badge badge-danger">expired</span>
                     {% endif %}
                 </td>
                 <td>{{ artifact.created_at }}</td>

@@ -58,7 +58,7 @@ def import_repo(request, pk):
                 artifact = Artifact.objects.get_or_create(
                     artifact_id=artifact_from_api["id"], run=run
                 )[0]
-                artifact.created = datetime.datetime.strptime(
+                artifact.created_at = datetime.datetime.strptime(
                     artifact_from_api["created_at"], "%Y-%m-%dT%H:%M:%SZ"
                 )
                 artifact.expired = artifact_from_api["expired"]

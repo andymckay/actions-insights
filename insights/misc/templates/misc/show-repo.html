@@ -1,6 +1,9 @@
-{{ repo.nwo }}
+{% extends "misc/base.html" %}
 
-<form action="{% url "import-repo" repo.id %}" method="post">
-    {% csrf_token %}
-    <input type="submit" value="Import data">
-</form>
+{% block content %}
+    {{ repo.nwo }}
+    <form action="{% url "import-repo" repo.id %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Import data">
+    </form>
+{% endblock %}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Actions insights</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent"><a href="/">Home</a></div>
+        {% if request.user.is_authenticated %}
+            <div class="collapse navbar-collapse" id="navbarSupportedContent"><a href="/logout">Logout</a></div>
+        {% else %}
+            <div class="collapse navbar-collapse" id="navbarSupportedContent"><a href="/loginURL">Login</a></div>
+        {% endif %}
+    </nav>
+
+    <div id="content" class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

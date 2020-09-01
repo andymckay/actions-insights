@@ -3,8 +3,10 @@ from misc.models import Repo, Token, Workflow, Run, Artifact
 from github import Github
 import requests
 import datetime
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def import_repo(request, pk):
     access = Token.objects.all()[0].access
     log = []

@@ -1,3 +1,7 @@
-{% for run in runs %}
-  {{ run.id }}
-{% endfor %}
+{% extends "misc/base.html" %}
+
+{% block content %}
+    {% for run in runs %}
+        {{ run.id }}
+    {% endfor %}
+{% endblock %}

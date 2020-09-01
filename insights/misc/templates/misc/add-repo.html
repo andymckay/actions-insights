@@ -1,12 +1,11 @@
-<html>
-    <body>
-        <h1>Add repo</h1>
-        {% for repo in repos %}
-        <form action="{% url "add-repo" %}" method="post">
-            {% csrf_token %}
-            {{ repo }}<input type="hidden" name="repo" value="{{ repo }}">
-            <input type="submit" value="Add">
-        </form>
-        {% endfor %}
-    </body>
-</html>
+{% extends "misc/base.html" %}
+
+{% block content %}
+    {% for repo in repos %}
+    <form action="{% url "add-repo" %}" method="post">
+        {% csrf_token %}
+        {{ repo }}<input type="hidden" name="repo" value="{{ repo }}">
+        <input type="submit" value="Add">
+    </form>
+    {% endfor %}
+{% endblock %}

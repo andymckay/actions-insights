@@ -1,8 +1,12 @@
-{{ repo.nwo }}
+{% extends "misc/base.html" %}
 
-{% for entry in log %}
-    <code>{{ entry }}</code>
-    <br>
-{% endfor %}
+{% block content %}
+    {{ repo.nwo }}
 
-Imported.
+    {% for entry in log %}
+        <code>{{ entry }}</code>
+        <br>
+    {% endfor %}
+
+    Imported.
+{% endblock %}

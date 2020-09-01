@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.template import loader
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from insights.settings import APP_ID, CLIENT_ID, CLIENT_SECRET, HOST, FILE_SYSTEM_ROOT
+from insights.settings import APP_ID, CLIENT_ID, CLIENT_SECRET, HOST
 from misc.models import Repo, Token, Artifact, Run
 from github import GithubIntegration
 from github import Github
@@ -11,7 +11,7 @@ import uuid
 import jwt
 import time
 import requests
-
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     base = "https://github.com/login/oauth/authorize?"
@@ -28,10 +28,12 @@ def index(request):
     return render(request, "misc/index.html", context)
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect("/")
 
+@login_required
 def add_repo(request):
     if request.POST:
         repo = Repo.objects.get_or_create(nwo=request.POST["repo"], user=request.user)
@@ -63,6 +65,7 @@ def add_repo(request):
 
     context = {"repos": repos}
     return render(request, "misc/add-repo.html", context)
+
 
 def oauth(request):
     res = requests.post(
@@ -109,18 +112,21 @@ def oauth(request):
     return redirect("/")
 
 
+@login_required
 def show_repo(request, pk):
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
     context = {"repo": repo}
     return render(request, "misc/show-repo.html", context)
 
 
+@login_required
 def artifacts(request, pk):
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
     context = {"repo": repo, "artifacts": Artifact.objects.filter(run__workflow__repo=repo)}
     return render(request, "misc/artifacts.html", context)
 
 
+@login_required
 def runs(request, pk):
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
     context = {"repo": repo, "runs": Run.objects.filter(workflow__repo=repo)}

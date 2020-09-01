@@ -1,13 +1,12 @@
-<html>
-    <body>
-        {% if request.user.is_authenticated %}
-            {% for repo in repos %}
-                {{ repo.nwo }} <a href="{% url "show-repo" repo.id %}">Import</a> | <a href="{% url "artifacts" repo.id %}">Artifacts</a> |  <a href="{% url "runs" repo.id %}">Runs</a>
-            {% endfor %}
-            <a href="add-repo">Add a repo</a>
-            <a href="logout">Logout</a>
-        {% else %}
-            <a href="{{ loginURL }}">Login</a>
-        {% endif %}
-    </body>
-</html>
+{% extends "misc/base.html" %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        {% for repo in repos %}
+            <p>{{ repo.nwo }} <a href="{% url "show-repo" repo.id %}">Import</a> | <a href="{% url "artifacts" repo.id %}">Artifacts</a> |  <a href="{% url "runs" repo.id %}">Runs</a></p>
+        {% endfor %}
+        <a href="add-repo" class="btn btn-primary">Add a repo</a>
+    {% else %}
+        <p>👋 Welcome to <b>Actions Insights</b>. First you'll need to <a href="{{ loginURL }}">login</a>.</p>
+    {% endif %}
+{% endblock %}

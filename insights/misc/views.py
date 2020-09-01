@@ -15,7 +15,8 @@ import requests
 from django.contrib.auth.decorators import login_required
 from misc.importer import import_repo
 from django.db.models import Sum
-
+from misc.utils import get_access_token_for_user
+from django.http import HttpResponse
 
 def index(request):
     base = "https://github.com/login/oauth/authorize?"
@@ -49,11 +50,10 @@ def add_repo(request):
         return import_repo(request, repo.pk)
 
     repos = []
-    access = Token.objects.get(user=request.user).access
     res = requests.get(
         "https://api.github.com/user/installations",
         headers={
-            "Authorization": "token %s" % access,
+            "Authorization": "token %s" % get_access_token_for_user,
             "Accept": "application/vnd.github.machine-man-preview+json",
         },
     )
@@ -161,6 +161,23 @@ def artifacts(request, pk):
         "size": Artifact.objects.filter(run__workflow__repo=repo, expired=False).aggregate(Sum('size_in_bytes')),
     }
     return render(request, "misc/artifacts.html", context)
+
+@login_required
+def download(request, pk):
+    artifact = get_object_or_404(Artifact, pk=pk, run__workflow__repo__user=request.user)
+    res = requests.get(
+        artifact.download,
+        headers={
+            "Authorization": "token %s" % get_access_token_for_user(request.user),
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+    )
+    res.raise_for_status()
+    response = HttpResponse(res.content, content_type=res.headers['Content-Type'])
+    response['Content-Disposition'] = res.headers['Content-Disposition']
+    return response
+
 
 
 @login_required

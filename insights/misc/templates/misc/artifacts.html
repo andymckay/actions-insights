@@ -52,7 +52,7 @@
                     {% endif %}
                 </td>
                 <td>{{ artifact.size_in_bytes|filesizeformat }}</td>
-                <td><a href="{{ artifact.download }}">Download</a></td>
+                <td>{% if not artifact.expired %}<a href="{% url "download" artifact.pk %}">Download</a>{% endif %}</td>
             </tr>
     {% endfor %}
     </tbody>

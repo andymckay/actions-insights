@@ -11,5 +11,6 @@ urlpatterns = [
     path("show-repo/<int:pk>", views.show_repo, name="show-repo"),
     path("import-repo/<int:pk>", importer.import_repo, name="import-repo"),
     path("artifacts/<int:pk>", views.artifacts, name="artifacts"),
+    path("artifacts/download/<int:pk>", views.download, name="download"),
     path("runs/<int:pk>", views.runs, name="runs"),
 ]

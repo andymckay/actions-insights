@@ -128,9 +128,23 @@ def show_repo(request, pk):
 @login_required
 def artifacts(request, pk):
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
+    filtering = request.GET.get('filter')
+    sorting = request.GET.get('sort')
+    kwargs = {
+        "run__workflow__repo": repo
+    }
+    if filtering == 'expired-only':
+        kwargs["expired"] = True
+    if filtering == 'active-only':
+        kwargs["expired"] = False
+
+    order = ["-created_at"]
+    if sorting == 'size':
+        order = ["-size_in_bytes", "-created_at"]
+
     context = {
         "repo": repo,
-        "artifacts": Artifact.objects.filter(run__workflow__repo=repo),
+        "artifacts": Artifact.objects.filter(**kwargs).order_by(*order),
     }
     return render(request, "misc/artifacts.html", context)
 

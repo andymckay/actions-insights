@@ -3,10 +3,19 @@
 
 {% block content %}
 
-<div class="m-3">
-    <a class="btn btn-outline-danger" href="?filter=expired-only">Show expired only</a></button>
-    <a class="btn btn-outline-success" href="?filter=active-only">Show Active only</a></button>
+<div class="mt-3 mb-3">
+    <h5 class="border-bottom">Filtering</h5>
+    <div>
+        <a href="?filter=expired-only&sort={{ request.GET.sort }}">Show expired only</a> &bull;
+        <a href="?filter=active-only&sort={{ request.GET.sort }}">Show active only</a> &bull;
+        <a href="?filter=none">Show all</a>
+    </div>
+    <div>
+        <a href="?sort=size&filter={{ request.GET.filter }}">Sort by size</a> &bull;
+        <a href="?sort=create&filter={{ request.GET.filter }}">Sort by creation</a>
+    </div>
 </div>
+
 
 <table class="table">
     <thead>

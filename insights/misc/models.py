@@ -26,6 +26,7 @@ class Run(models.Model):
     run_id = models.IntegerField()
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
+    elapsed = models.DurationField(null=True)
     timing = models.IntegerField(default=0)
     status = models.TextField(max_length=200, default="")
     conclusion = models.TextField(max_length=200, default="")

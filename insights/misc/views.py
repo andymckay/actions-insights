@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404, render, redirect
 from django.template import loader
 from django.contrib.auth.models import User
@@ -166,5 +167,11 @@ def artifacts(request, pk):
 def runs(request, pk):
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
     order = ["-start_time"]
-    context = {"repo": repo, "runs": Run.objects.filter(workflow__repo=repo).order_by(*order)}
+    context = {
+        "repo": repo,
+        "runs": Run.objects.filter(workflow__repo=repo).order_by(*order),
+    }
+    for run in context["runs"]:
+        run.total_artifact_size = Artifact.objects.filter(run=run).aggregate(Sum('size_in_bytes'))['size_in_bytes__sum']
+
     return render(request, "misc/runs.html", context)

@@ -38,6 +38,7 @@ def import_repo(request, pk):
                 run.conclusion = run_from_api.conclusion
                 run.start_time = run_from_api.created_at
                 run.end_time = run_from_api.updated_at
+                run.elapsed = run_from_api.updated_at - run_from_api.created_at
                 run.status = run_from_api.status
                 run.save()
                 log.append("Saved run: %s" % run.id)

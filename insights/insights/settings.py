@@ -25,7 +25,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["insights.ngrok.io"]
+ALLOWED_HOSTS = ["insights.ngrok.io", '127.0.0.1']
 
 
 # Application definition
@@ -125,6 +125,6 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 APP_ID = 79072
 CLIENT_ID = "Iv1.24363a764c2c6ede"
 CLIENT_SECRET = os.getenv("ACTIONS_INSIGHTS_SECRET")
-HOST = "https://insights.ngrok.io"
+HOST = "http://127.0.0.1:8000"
 
 LOGIN_URL = "/"

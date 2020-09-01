@@ -11,6 +11,7 @@ class Repo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     nwo = models.CharField(max_length=200, default="")
     access_token = models.CharField(max_length=255, default="")
+    public = models.BooleanField(default=True)
 
 
 class Workflow(models.Model):

@@ -1,9 +1,9 @@
 {% extends "misc/base.html" %}
 
 {% block content %}
-    {{ repo.nwo }}
+    <p>This will import data for <code>{{ repo.nwo }}</code> and can take a bit of time depending upon repo size. You can repeat this import multiple times if you wish.</p>
     <form action="{% url "import-repo" repo.id %}" method="post">
         {% csrf_token %}
-        <input type="submit" value="Import data">
+        <input type="submit" class="btn btn-primary" value="Import data">
     </form>
 {% endblock %}

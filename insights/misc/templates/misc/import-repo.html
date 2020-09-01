@@ -1,12 +1,16 @@
 {% extends "misc/base.html" %}
 
 {% block content %}
-    {{ repo.nwo }}
+    <div class="alert alert-success">Data import for <code>{{ repo.nwo }}</code> was successful.</div>
+    <div class="p-3">
+        <details>
+            <summary>Import log details...</summary>
+        {% for entry in log %}
+            <code>{{ entry }}</code>
+            <br>
+        {% endfor %}
+        </details>
+    </div>
 
-    {% for entry in log %}
-        <code>{{ entry }}</code>
-        <br>
-    {% endfor %}
-
-    Imported.
+    <a href="/" class="btn btn-primary">Done</a>
 {% endblock %}

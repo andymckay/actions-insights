@@ -69,5 +69,5 @@ def import_repo(request, pk):
                 artifact.save()
                 log.append("Artifact saved %s" % artifact.id)
 
-    context = {"log": log}
+    context = {"log": log, "repo": repo}
     return render(request, "misc/import-repo.html", context)

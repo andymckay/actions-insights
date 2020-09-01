@@ -29,7 +29,7 @@
                         <span class="badge badge-{% if repo.run_count %}success{% else %}warning{% endif %}">{{ repo.run_count }}</span>
                     </td>
                     <td>
-                        <a href="{% url "show-repo" repo.id %}">Import more</a>
+                        <a href="{% url "show-repo" repo.id %}">Import</a>
                     </td>
                     <td><a href="https://github.com/{{ repo.nwo }}">View on GitHub</a></td>
                 </tr>

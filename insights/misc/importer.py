@@ -30,7 +30,7 @@ def import_repo(request, pk):
         log.append("Saved workflow: %s" % workflow.path)
 
     for workflow in Workflow.objects.filter(repo=repo):
-        workflow_from_api = repo_from_api.get_workflow("%s" % workflow.workflow_id)
+        workflow_from_api = repo_from_api.get_workflow(str(workflow.workflow_id))
         for run_from_api in workflow_from_api.get_runs():
             if run_from_api.status == "completed":
                 run = Run.objects.get_or_create(

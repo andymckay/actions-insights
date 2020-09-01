@@ -37,5 +37,5 @@ class Artifact(models.Model):
     created_at = models.DateTimeField(null=True)
     size_in_bytes = models.IntegerField(null=True)
     name = models.TextField(max_length=200, default=True)
-    expired = models.TextField(max_length=200, default=True)
+    expired = models.BooleanField(default=True)
     download = models.URLField()

@@ -23,6 +23,8 @@
                 <td>{{ artifact.name }}
                     {% if artifact.expired %}
                         <span class="badge badge-danger">expired</span>
+                    {% else %}
+                        <span class="badge badge-success">active</span>
                     {% endif %}
                 </td>
                 <td>{{ artifact.created_at }}</td>

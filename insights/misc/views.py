@@ -167,7 +167,7 @@ def workflow(request, pk):
     rounding = {
         "UBUNTU": 1,
         "MACOS": 10,
-        "WINDOWS": 3
+        "WINDOWS": 2
     }
     workflow = get_object_or_404(Workflow, id=pk, repo__user=request.user)
     context = {

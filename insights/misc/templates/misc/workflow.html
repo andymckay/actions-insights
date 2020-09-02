@@ -2,8 +2,9 @@
 {% load custom %}
 
 {% block content %}
+<h2>Workflow</h2>
+<p>Workflow stats from <code>{{ workflow.repo.nwo }}</code>.</p>
 <div class="mt-3 mb-3">
-    <h5 class="border-bottom">💡 Workflow</h5>
     <table>
         <tr>
             <th class="pr-2">Name</th><td>{{ workflow.name }}</td>

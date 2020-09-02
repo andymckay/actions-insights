@@ -27,9 +27,15 @@ class Run(models.Model):
     start_time = models.DateTimeField(null=True)
     end_time = models.DateTimeField(null=True)
     elapsed = models.DurationField(null=True)
-    timing = models.IntegerField(default=0)
     status = models.TextField(max_length=200, default="")
     conclusion = models.TextField(max_length=200, default="")
+
+
+class Timing(models.Model):
+    run = models.ForeignKey(Run, on_delete=models.CASCADE)
+    os = models.CharField(max_length=200)
+    length = models.IntegerField(default=0)
+    jobs = models.IntegerField(default=0)
 
 
 class Artifact(models.Model):

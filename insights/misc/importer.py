@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from github import Github
 from django.contrib.auth.models import User
 
-from misc.models import Artifact, Repo, Run, Token, Workflow
+from misc.models import Artifact, Repo, Run, Token, Timing, Workflow
 from misc.utils import get_access_token_for_user, request_headers
 
 MAX_PAGES = 100
@@ -69,12 +69,25 @@ def get_runs(log, workflow, workflow_from_api, k):
             run.save()
             log.append("Saved run: %s" % run.id)
 
+            timing_from_api = run_from_api.timing()
+            print(timing_from_api.billable)
+            if timing_from_api.billable:
+                for key, value in timing_from_api.billable.items():
+                    timing = Timing.objects.get_or_create(os=key, run=run)[0]
+                    timing.length = value["total_ms"]
+                    timing.jobs = value["jobs"]
+                    timing.save()
+                    log.append("Saved timing for run: %s" % run.id)
+            else:
+                log.append("Timing billing empty for run: %s" % run.id)
+
     k += 1
     if k > MAX_PAGES:
         log.append("Aborting runs import at %s pages" % k)
         return
 
     get_runs(log, workflow, workflow_from_api, k)
+
 
 def get_artifacts(log, repo, run, access, k):
     res = requests.get(
@@ -169,6 +182,7 @@ def webhook(request):
         repo = Repo.objects.get(nwo=nwo)
 
         workflow_from_api = repo_from_api.get_workflow(str(workflow_id))
+        # We don't create a workflow if one doesn't exist :(
         workflow = Workflow.objects.get(workflow_id=workflow_from_api.id)
 
         # There is no get_run? Damn
@@ -180,6 +194,7 @@ def webhook(request):
         res.raise_for_status()
         run_from_api = res.json()
 
+        # Perhaps we should populate a Run object in PyGithub to make this easier?
         run = Run.objects.get_or_create(
             run_id=run_from_api["id"], workflow_id=workflow.id
         )[0]

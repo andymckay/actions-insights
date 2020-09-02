@@ -1,11 +1,19 @@
 import datetime
+import json
 
 import requests
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt
 from github import Github
+from django.contrib.auth.models import User
 
 from misc.models import Artifact, Repo, Run, Token, Workflow
+from misc.utils import get_access_token_for_user, request_headers
+
 MAX_PAGES = 100
 
 class Log():
@@ -111,8 +119,8 @@ def get_artifacts(log, repo, run, access, k):
 def import_repo(request, pk):
     log = Log()
     log.append("Starting run.")
-    access = Token.objects.all()[0].access
-    log.append("Getting access.")
+    access = get_access_token_for_user(request.user)
+    log.append("Getting access token for user: %s" % request.user)
     g = Github(access)
 
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
@@ -133,3 +141,62 @@ def import_repo(request, pk):
 
     context = {"log": log.data, "repo": repo}
     return render(request, "misc/import-repo.html", context)
+
+@csrf_exempt
+def webhook(request):
+    log = Log()
+    data = json.loads(request.body)
+    if data["action"] == "requested":
+        log.append("Ignoring a webhook with action: requested.")
+        return HttpResponse()
+
+    if data["action"] == "completed":
+        username = data["sender"]["login"]
+        workflow_id = data["workflow"]["id"]
+        run_id = data["workflow_run"]["id"]
+        nwo = data["repository"]["full_name"]
+
+        try:
+            user = User.objects.get(username='github:%s' % username)
+        except ObjectDoesNotExist:
+            log.append("Event sender was %s and that doesn't exist in this database, ignoring.")
+            return HttpResponse()
+
+        # This is all wrong and needs fixing up.
+        access = get_access_token_for_user(user)
+        g = Github(access)
+        repo_from_api = g.get_repo(nwo)
+        repo = Repo.objects.get(nwo=nwo)
+
+        workflow_from_api = repo_from_api.get_workflow(str(workflow_id))
+        workflow = Workflow.objects.get(workflow_id=workflow_from_api.id)
+
+        # There is no get_run? Damn
+        res = requests.get(
+            "https://api.github.com/repos/%s/actions/runs/%s"
+            % (repo.nwo, run_id),
+            headers=request_headers(user)
+        )
+        res.raise_for_status()
+        run_from_api = res.json()
+
+        run = Run.objects.get_or_create(
+            run_id=run_from_api["id"], workflow_id=workflow.id
+        )[0]
+        run.conclusion = run_from_api["conclusion"]
+        run.start_time = datetime.datetime.strptime(
+            run_from_api["created_at"], "%Y-%m-%dT%H:%M:%SZ"
+        )
+        run.end_time = datetime.datetime.strptime(
+            run_from_api["updated_at"], "%Y-%m-%dT%H:%M:%SZ"
+        )
+        run.elapsed = run.end_time - run.start_time
+        run.status = run_from_api["status"]
+        run.save()
+        log.append("Saved run: %s" % run.id)
+
+        # PyGithub uses Python syntax, first page is 0.
+        # Looks like the REST API starts with the first page at 1.
+        get_artifacts(log, repo, run, access, 1)
+
+    return HttpResponse()

@@ -15,4 +15,5 @@ urlpatterns = [
     path("artifacts/download/<int:pk>", views.download, name="download"),
     path("artifacts/delete/<int:pk>", views.delete, name="delete"),
     path("runs/<int:pk>", views.runs, name="runs"),
+    path("webhook", importer.webhook, name="webhook"),
 ]

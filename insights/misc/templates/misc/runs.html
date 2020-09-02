@@ -2,5 +2,28 @@
 {% load custom %}
 
 {% block content %}
-
+<table class="table">
+    <thead>
+        <tr>
+            <th>Workflow</th>
+            <th>Created</th>
+            <th>Elapsed time</th>
+            <th>Conclusion</th>
+            <th>Total artifacts size</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for run in runs %}
+            <tr>
+                <td>{{ run.workflow.name }}</td>
+                <td>{{ run.start_time }}</td>
+                <td>{{ run.elapsed }}</td>
+                <td>{{ run.conclusion }}</td>
+                <td>{% if run.total_artifact_size != None %}
+                    {{ run.total_artifact_size|filesizeformat }}
+                {% endif %}
+                </td>
+            </tr>
+    {% endfor %}
+    </tbody>
 {% endblock %}

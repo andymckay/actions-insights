@@ -39,7 +39,7 @@ def add_repo(request):
     res = requests.get(
         "https://api.github.com/user/installations",
         headers={
-            "Authorization": "token %s" % get_access_token_for_user,
+            "Authorization": "token %s" % get_access_token_for_user(request.user),
             "Accept": "application/vnd.github.machine-man-preview+json",
         },
     )
@@ -53,7 +53,7 @@ def add_repo(request):
             "https://api.github.com/user/installations/%s/repositories"
             % installation["id"],
             headers={
-                "Authorization": "token %s" % access,
+                "Authorization": "token %s" % get_access_token_for_user(request.user),
                 "Accept": "application/vnd.github.machine-man-preview+json",
             },
         )
@@ -185,10 +185,8 @@ def workflow(request, pk):
     }
     # Because I'm a coward let's do this the easy way.
     timing_queryset = Timing.objects.filter(run__workflow=workflow).values_list("os", "length", "jobs")
-    print(timing_queryset)
     # A nice easy dict for the templates to understand.
     for os, length_ms, jobs in timing_queryset:
-        print(os, length_ms, jobs)
         seconds = length_ms / 1000
         context["timings_seconds"][os] += int(seconds)
         context["timings_rounded"][os] += math.ceil(seconds / 60.0)

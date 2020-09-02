@@ -18,6 +18,7 @@
             <th>Elapsed time <a href="?sort=elapsed&filter={{ request.GET.filter }}">🔼</a>&nbsp;<a href="?sort=-elapsed&filter={{ request.GET.filter }}">🔽</a></th>
             <th>Conclusion</th>
             <th>Size of artifacts</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -32,6 +33,7 @@
                     {{ run.total_artifact_size|filesizeformat }}
                 {% endif %}
                 </td>
+                <td><a href="https://github.com/{{ run.workflow.repo.nwo }}/actions/runs/{{ run.run_id }}">GitHub</a></td>
             </tr>
     {% endfor %}
     </tbody>

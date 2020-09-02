@@ -4,6 +4,7 @@ import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum, Avg
+from django.db.models.functions import TruncDate
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -146,6 +147,8 @@ def runs(request, pk):
         order = [sorting]
     if sorting == "elapsed" or sorting == "-elapsed":
         order = [sorting, "-start_time"]
+    if sorting == "total_artifact_size" or sorting == "-total_artifact_size":
+        order = [sorting, "-start_time"]
 
     kwargs = {"workflow__repo": repo}
     if filtering == "failed-only":
@@ -153,12 +156,8 @@ def runs(request, pk):
 
     context = {
         "repo": repo,
-        "runs": Run.objects.filter(**kwargs).order_by(*order)
+        "runs": Run.objects.filter(**kwargs).annotate(total_artifact_size=Sum('artifact__size_in_bytes')).order_by(*order)
     }
-    for run in context["runs"]:
-        run.total_artifact_size = Artifact.objects.filter(run=run).aggregate(
-            Sum("size_in_bytes")
-        )["size_in_bytes__sum"]
 
     return render(request, "misc/runs.html", context)
 
@@ -176,12 +175,15 @@ def workflow(request, pk):
         "artifact_count": Artifact.objects.filter(run__workflow=workflow, expired=False).count(),
         "artifact_size": Artifact.objects.filter(run__workflow=workflow, expired=False).aggregate(Sum("size_in_bytes")),
         "run_count": Run.objects.filter(workflow=workflow).count(),
-        "elapsed_time_sum": Run.objects.filter(workflow=workflow).aggregate(Sum('elapsed'))["elapsed__sum"],
-        "elapsed_time_avg": Run.objects.filter(workflow=workflow).aggregate(Avg('elapsed'))["elapsed__avg"],
+        "elapsed_time_stats": Run.objects.filter(workflow=workflow).aggregate(Sum('elapsed'), Avg('elapsed')),
         "timings_seconds": {"UBUNTU": 0, "MACOS": 0, "WINDOWS": 0},
         "timings_rounded": {"UBUNTU": 0, "MACOS": 0, "WINDOWS": 0},
         "timings_multiplied": {"UBUNTU": 0, "MACOS": 0, "WINDOWS": 0},
-        "counts": {"UBUNTU": 0, "MACOS": 0, "WINDOWS": 0}
+        "counts": {"UBUNTU": 0, "MACOS": 0, "WINDOWS": 0},
+        "daily_run_count": Run.objects.filter(workflow=workflow).annotate(day=TruncDate('start_time')).values('day')
+            .annotate(run_count=Count('id')),
+        "daily_artifact_size": Run.objects.filter(workflow=workflow).annotate(day=TruncDate('start_time')).values('day')
+            .annotate(total_artifact_size=Sum('artifact__size_in_bytes')),
     }
     # Because I'm a coward let's do this the easy way.
     timing_queryset = Timing.objects.filter(run__workflow=workflow).values_list("os", "length", "jobs")

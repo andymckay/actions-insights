@@ -4,11 +4,37 @@ document.addEventListener("DOMContentLoaded", function(){
 })
 
 function findGraphs() {
-    let ctx = document.getElementById('runs-doughnut');
-    if (ctx) {
-        new Chart(ctx, {
+    let canvas = document.getElementById('runs-doughnut');
+    if (canvas) {
+        new Chart(canvas, {
             type: 'doughnut',
-            data: JSON.parse(ctx.dataset.data)
+            data: JSON.parse(canvas.dataset.data)
+        });
+    }
+
+    const timeFormat = 'YYYY-MM-DD';
+
+    canvas = document.getElementById('daily-run-count');
+    if (canvas) {
+        console.log(JSON.parse(canvas.dataset.data))
+
+        new Chart(canvas, {
+            type: 'line',
+            data: JSON.parse(canvas.dataset.data),
+            options: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        parser: timeFormat,
+                        // round: 'day'
+                        tooltipFormat: 'll HH:mm'
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date'
+                    }
+                }]
+            }
         });
     }
 }

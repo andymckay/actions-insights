@@ -40,7 +40,29 @@ def doughnut(queryset):
     return json.dumps(result)
 
 
-
 @register.filter(name="bootstrap")
 def bootstrap(value):
     return bootstrap_colours.get(value, 'light')
+
+
+@register.filter(name="timechart")
+def timechart(queryset):
+    # Which makes this terrible too?
+    labels = []
+    data = []
+    colours = []
+    for row in queryset:
+        print("hi")
+        print(row)
+
+        for k, v in row.items():
+            print("k %s" % k)
+            print("v %s" % str(v))
+            if k.endswith('_count'):
+                data.append(v)
+            else:
+                labels.append(str(v))
+                colours.append("blue")
+
+    result = {'labels': labels, 'datasets': [{'label': 'runs', 'fill': 'false', 'data': data, 'backgroundColor': colours}]}
+    return json.dumps(result)

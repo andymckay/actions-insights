@@ -41,12 +41,14 @@
             <th class="pr-2">Run count</th><td>{{ run_count }}</td>
         </tr>
         <tr>
-            <th class="pr-2">Total elapsed time</th><td>{{ elapsed_time_sum }}</td>
+            <th class="pr-2">Total elapsed time</th><td>{{ elapsed_time_stats.elapsed__sum }}</td>
         </tr>
         <tr>
-            <th class="pr-2">Average elapsed time</th><td>{{ elapsed_time_avg }}</td>
+            <th class="pr-2">Average elapsed time</th><td>{{ elapsed_time_stats.elapsed__avg }}</td>
         </tr>
     </table>
+
+    <canvas id="daily-run-count" data-data="{{ daily_run_count|timechart }}"></canvas>
 </div>
 
 <div class="mt-3 mb-3"></div>

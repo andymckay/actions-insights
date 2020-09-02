@@ -1,7 +1,7 @@
 import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Avg
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -135,10 +135,17 @@ def delete(request, pk):
 @login_required
 def runs(request, pk):
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
+
+    sorting = request.GET.get("sort")
     order = ["-start_time"]
+    if sorting == "start_time" or sorting == "-start_time":
+        order = [sorting]
+    if sorting == "elapsed" or sorting == "-elapsed":
+        order = [sorting, "-start_time"]
+
     context = {
         "repo": repo,
-        "runs": Run.objects.filter(workflow__repo=repo).order_by(*order),
+        "runs": Run.objects.filter(workflow__repo=repo).order_by(*order)
     }
     for run in context["runs"]:
         run.total_artifact_size = Artifact.objects.filter(run=run).aggregate(
@@ -154,7 +161,10 @@ def workflow(request, pk):
         "workflow": workflow,
         "states": Run.objects.values('conclusion').distinct().annotate(Count('conclusion')),
         "artifact_count": Artifact.objects.filter(run__workflow=workflow, expired=False).count(),
-        "artifact_size": Artifact.objects.filter(run__workflow=workflow, expired=False).aggregate(Sum("size_in_bytes"))
+        "artifact_size": Artifact.objects.filter(run__workflow=workflow, expired=False).aggregate(Sum("size_in_bytes")),
+        "run_count": Run.objects.filter(workflow=workflow).count(),
+        "elapsed_time_sum": Run.objects.filter(workflow=workflow).aggregate(Sum('elapsed'))["elapsed__sum"],
+        "elapsed_time_avg": Run.objects.filter(workflow=workflow).aggregate(Avg('elapsed'))["elapsed__avg"],
     }
     return render(request, "misc/workflow.html", context)
 

@@ -33,4 +33,19 @@
     <canvas id="runs-doughnut" data-data="{{ states|doughnut }}"></canvas>
 </div>
 
+<div class="mt-3 mb-3">
+    <h5 class="border-bottom">⏲ Executions</h5>
+    <table>
+        <tr>
+            <th class="pr-2">Run count</th><td>{{ run_count }}</td>
+        </tr>
+        <tr>
+            <th class="pr-2">Total elapsed time</th><td>{{ elapsed_time_sum }}</td>
+        </tr>
+        <tr>
+            <th class="pr-2">Average elapsed time</th><td>{{ elapsed_time_avg }}</td>
+        </tr>
+    </table>
+</div>
+
 {% endblock %}

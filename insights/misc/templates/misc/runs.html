@@ -6,8 +6,8 @@
     <thead>
         <tr>
             <th>Workflow</th>
-            <th>Created</th>
-            <th>Elapsed time</th>
+            <th>Created <a href="?sort=start_time&filter={{ request.GET.filter }}">🔼</a><a href="?sort=-start_time&filter={{ request.GET.filter }}">🔽</a></th>
+            <th>Elapsed time <a href="?sort=elapsed&filter={{ request.GET.filter }}">🔼</a><a href="?sort=-elapsed&filter={{ request.GET.filter }}">🔽</a></th>
             <th>Conclusion</th>
             <th>Size of artifacts</th>
         </tr>
@@ -26,4 +26,5 @@
             </tr>
     {% endfor %}
     </tbody>
+</table>
 {% endblock %}

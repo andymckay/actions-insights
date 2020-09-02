@@ -11,11 +11,25 @@
         <tr>
             <th class="pr-2">Path</th><td><code>{{ workflow.path }}</code></td>
         </tr>
+        <tr>
+            <th class="pr-2">Code</th><td><a href="https://github.com/{{ workflow.repo.nwo }}/blob/master/.github/workflows/{{ workflow.path}}">.github/workflows/{{ workflow.path}}</a></td>
+        </tr>
+        <tr>
+            <th class="pr-2">Artifacts</th>
+            <td>
+                {% if artifact_count %}
+                    {{ artifact_count }} unexpired artifacts, {{ artifact_size.size_in_bytes__sum|filesizeformat }}
+                {% else %}
+                    No unexpired artifacts.
+                {% endif %}
+            </td>
+        </tr>
     </table>
 <div>
 
 <div class="mt-3 mb-3">
     <h5 class="border-bottom">❓ Insights</h5>
+    <h6>Workflow success rate</h6>
     <canvas id="runs-doughnut" data-data="{{ states|doughnut }}"></canvas>
 </div>
 

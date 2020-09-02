@@ -152,7 +152,9 @@ def workflow(request, pk):
     workflow = get_object_or_404(Workflow, id=pk, repo__user=request.user)
     context = {
         "workflow": workflow,
-        "states": Run.objects.values('conclusion').distinct().annotate(Count('conclusion'))
+        "states": Run.objects.values('conclusion').distinct().annotate(Count('conclusion')),
+        "artifact_count": Artifact.objects.filter(run__workflow=workflow, expired=False).count(),
+        "artifact_size": Artifact.objects.filter(run__workflow=workflow, expired=False).aggregate(Sum("size_in_bytes"))
     }
     return render(request, "misc/workflow.html", context)
 

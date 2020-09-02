@@ -52,12 +52,7 @@ def timechart(queryset):
     data = []
     colours = []
     for row in queryset:
-        print("hi")
-        print(row)
-
         for k, v in row.items():
-            print("k %s" % k)
-            print("v %s" % str(v))
             if k.endswith('_count'):
                 data.append(v)
             else:

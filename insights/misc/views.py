@@ -177,5 +177,5 @@ def workflow(request, pk):
 @login_required
 def workflows(request, pk):
     workflows = Workflow.objects.filter(repo__id=pk, repo__user=request.user)
-    context = {"workflows": workflows}
+    context = {"workflows": workflows, "repo": Repo.objects.get(pk=pk) }
     return render(request, "misc/workflows.html", context)

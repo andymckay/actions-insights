@@ -2,6 +2,8 @@
 {% load custom %}
 
 {% block content %}
+<h2>All artifacts</h2>
+<p>For the repository <code>{{ repo.nwo }}</code>.</p>
 
 <div class="mt-3 mb-3">
     <h5 class="border-bottom">💡 Statistics</h5>
@@ -28,9 +30,9 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Created <a href="?sort=created_at&filter={{ request.GET.filter }}">🔼</a><a href="?sort=-created_at&filter={{ request.GET.filter }}">🔽</a></th>
+            <th>Created <a href="?sort=created_at&filter={{ request.GET.filter }}">🔼</a>&nbsp;<a href="?sort=-created_at&filter={{ request.GET.filter }}">🔽</a></th>
             <th>Expires</th>
-            <th>Size <a href="?sort=size_in_bytes&filter={{ request.GET.filter }}">🔼</a><a href="?sort=-size_in_bytes&filter={{ request.GET.filter }}">🔽</a></th>
+            <th>Size <a href="?sort=size_in_bytes&filter={{ request.GET.filter }}">🔼</a>&nbsp;<a href="?sort=-size_in_bytes&filter={{ request.GET.filter }}">🔽</a></th>
             <th></th>
         </tr>
     </thead>

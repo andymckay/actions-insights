@@ -187,10 +187,10 @@ def workflow(request, pk):
     timing_queryset = Timing.objects.filter(run__workflow=workflow).values_list("os", "length", "jobs")
     # A nice easy dict for the templates to understand.
     for os, length_ms, jobs in timing_queryset:
-        seconds = length_ms / 1000
-        context["timings_seconds"][os] += int(seconds)
-        context["timings_rounded"][os] += math.ceil(seconds / 60.0)
-        context["timings_multiplied"][os] += math.ceil(seconds * rounding[os] / 60.0)
+        seconds = length_ms / 1000.0
+        context["timings_seconds"][os] += seconds
+        context["timings_multiplied"][os] += seconds * rounding[os]
+        context["timings_rounded"][os] += math.ceil(seconds * rounding[os] / 60.0)
         context["counts"][os] += jobs
     return render(request, "misc/workflow.html", context)
 

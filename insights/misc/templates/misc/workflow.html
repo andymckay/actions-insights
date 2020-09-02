@@ -46,6 +46,11 @@
             <th class="pr-2">Average elapsed time</th><td>{{ elapsed_time_avg }}</td>
         </tr>
     </table>
+</div>
+
+<div class="mt-3 mb-3"></div>
+    <h5 class="border-bottom">💲 Billing</h5>
+    <p>This is complicated.</p>
     <table class="table">
         <tr>
             <th></th>
@@ -54,28 +59,28 @@
             <th>Windows</th>
         </tr>
         <tr>
-            <th>Seconds</th>
-            <td>{{ timings_seconds.UBUNTU }} secs</td>
-            <td>{{ timings_seconds.MACOS }} secs</td>
-            <td>{{ timings_seconds.WINDOWS }} secs</td>
-        </tr>
-        <tr>
-            <th>Rounded</th>
-            <td>{{ timings_rounded.UBUNTU }} mins</td>
-            <td>{{ timings_rounded.MACOS }} mins</td>
-            <td>{{ timings_rounded.WINDOWS }} mins</td>
-        </tr>
-        <tr>
-            <th>Multiplied</th>
-            <td>{{ timings_multiplied.UBUNTU }} mins</td>
-            <td>{{ timings_multiplied.MACOS }} mins</td>
-            <td>{{ timings_multiplied.WINDOWS }} mins</td>
-        </tr>
-        <tr>
             <th>Counts</th>
             <td>{{ counts.UBUNTU }}</td>
             <td>{{ counts.MACOS }}</td>
             <td>{{ counts.WINDOWS }}</td>
+        </tr>
+        <tr>
+            <th>Seconds (total)</th>
+            <td>{{ timings_seconds.UBUNTU|floatformat }} secs</td>
+            <td>{{ timings_seconds.MACOS|floatformat }} secs</td>
+            <td>{{ timings_seconds.WINDOWS|floatformat }} secs</td>
+        </tr>
+        <tr>
+            <th>Multiplied (total)</th>
+            <td>{{ timings_multiplied.UBUNTU|floatformat }} seconds</td>
+            <td>{{ timings_multiplied.MACOS|floatformat }} seconds</td>
+            <td>{{ timings_multiplied.WINDOWS|floatformat }} seconds</td>
+        </tr>
+        <tr>
+            <th>Rounded (total)</th>
+            <td>{{ timings_rounded.UBUNTU }} mins</td>
+            <td>{{ timings_rounded.MACOS }} mins</td>
+            <td>{{ timings_rounded.WINDOWS }} mins</td>
         </tr>
     </table>
 </div>

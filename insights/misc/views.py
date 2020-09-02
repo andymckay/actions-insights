@@ -139,8 +139,6 @@ def runs(request, pk):
     context = {
         "repo": repo,
         "runs": Run.objects.filter(workflow__repo=repo).order_by(*order),
-        # Can't remember if this is the fastest way to do it.
-        "states": Run.objects.values('conclusion').distinct().annotate(Count('conclusion'))
     }
     for run in context["runs"]:
         run.total_artifact_size = Artifact.objects.filter(run=run).aggregate(
@@ -148,3 +146,18 @@ def runs(request, pk):
         )["size_in_bytes__sum"]
 
     return render(request, "misc/runs.html", context)
+
+@login_required
+def workflow(request, pk):
+    workflow = get_object_or_404(Workflow, id=pk, repo__user=request.user)
+    context = {
+        "workflow": workflow,
+        "states": Run.objects.values('conclusion').distinct().annotate(Count('conclusion'))
+    }
+    return render(request, "misc/workflow.html", context)
+
+@login_required
+def workflows(request, pk):
+    workflows = Workflow.objects.filter(repo__id=pk, repo__user=request.user)
+    context = {"workflows": workflows}
+    return render(request, "misc/workflows.html", context)

@@ -1,0 +1,22 @@
+{% extends "misc/base.html" %}
+{% load custom %}
+
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Path</th>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for workflow in workflows %}
+            <tr>
+                <td><code>{{ workflow.path }}</code></td>
+                <td>{{ workflow.name }}</td>
+                <td><a href="{% url "workflow" workflow.id %}">Summary</a></td>
+            </tr>
+    {% endfor %}
+    </tbody>
+{% endblock %}

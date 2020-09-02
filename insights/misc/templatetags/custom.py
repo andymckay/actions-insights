@@ -10,6 +10,12 @@ state_colours = {
     "stale": "gainsboro"
 }
 
+bootstrap_colours = {
+    "failure": "danger",
+    "success": "success",
+    "stale": "secondary"
+}
+
 
 @register.filter(name="expiration")
 def expiration(value):
@@ -32,3 +38,9 @@ def doughnut(queryset):
 
     result = {'labels': labels, 'datasets': [{'data': data, 'backgroundColor': colours}]}
     return json.dumps(result)
+
+
+
+@register.filter(name="bootstrap")
+def bootstrap(value):
+    return bootstrap_colours.get(value, 'light')

@@ -137,7 +137,7 @@ def delete(request, pk):
 @login_required
 def runs(request, pk):
     repo = get_object_or_404(Repo, pk=pk, user=request.user)
-
+    filtering = request.GET.get("filter")
     sorting = request.GET.get("sort")
     order = ["-start_time"]
     if sorting == "start_time" or sorting == "-start_time":
@@ -145,9 +145,13 @@ def runs(request, pk):
     if sorting == "elapsed" or sorting == "-elapsed":
         order = [sorting, "-start_time"]
 
+    kwargs = {"workflow__repo": repo}
+    if filtering == "failed-only":
+        kwargs["conclusion"] = "failure"
+
     context = {
         "repo": repo,
-        "runs": Run.objects.filter(workflow__repo=repo).order_by(*order)
+        "runs": Run.objects.filter(**kwargs).order_by(*order)
     }
     for run in context["runs"]:
         run.total_artifact_size = Artifact.objects.filter(run=run).aggregate(

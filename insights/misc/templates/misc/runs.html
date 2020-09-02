@@ -2,12 +2,20 @@
 {% load custom %}
 
 {% block content %}
+<div class="mt-3 mb-3">
+    <h5 class="border-bottom">❓ Filtering</h5>
+    <div>
+        <a href="?filter=failed-only&sort={{ request.GET.sort }}">Show failed only</a> &bull;
+        <a href="?sort={{ request.GET.sort }}">Show all</a>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
             <th>Workflow</th>
-            <th>Created <a href="?sort=start_time&filter={{ request.GET.filter }}">🔼</a><a href="?sort=-start_time&filter={{ request.GET.filter }}">🔽</a></th>
-            <th>Elapsed time <a href="?sort=elapsed&filter={{ request.GET.filter }}">🔼</a><a href="?sort=-elapsed&filter={{ request.GET.filter }}">🔽</a></th>
+            <th>Created <a href="?sort=start_time&filter={{ request.GET.filter }}">🔼</a>&nbsp;<a href="?sort=-start_time&filter={{ request.GET.filter }}">🔽</a></th>
+            <th>Elapsed time <a href="?sort=elapsed&filter={{ request.GET.filter }}">🔼</a>&nbsp;<a href="?sort=-elapsed&filter={{ request.GET.filter }}">🔽</a></th>
             <th>Conclusion</th>
             <th>Size of artifacts</th>
         </tr>
@@ -15,10 +23,11 @@
     <tbody>
         {% for run in runs %}
             <tr>
-                <td>{{ run.workflow.name }}</td>
+                <td><a href="{% url "workflow" run.workflow.id %}">{{ run.workflow.name }}</a></td>
                 <td>{{ run.start_time }}</td>
                 <td>{{ run.elapsed }}</td>
-                <td>{{ run.conclusion }}</td>
+                <td>
+                    <span class="badge badge-{{ run.conclusion|bootstrap }}">{{ run.conclusion }}</a></td>
                 <td>{% if run.total_artifact_size != None %}
                     {{ run.total_artifact_size|filesizeformat }}
                 {% endif %}

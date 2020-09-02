@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render
 from github import Github
 
 from misc.models import Artifact, Repo, Run, Token, Workflow
+MAX_PAGES = 100
 
 class Log():
     def __init__(self):
@@ -34,6 +35,10 @@ def get_workflows(log, repo, repo_from_api, k):
         log.append("Saved workflow: %s" % workflow.path)
 
     k += 1
+    if k > MAX_PAGES:
+        log.append("Aborting workflow import at %s pages" % k)
+        return
+
     get_workflows(log, repo, repo_from_api, k)
 
 def get_runs(log, workflow, workflow_from_api, k):
@@ -57,6 +62,10 @@ def get_runs(log, workflow, workflow_from_api, k):
             log.append("Saved run: %s" % run.id)
 
     k += 1
+    if k > MAX_PAGES:
+        log.append("Aborting runs import at %s pages" % k)
+        return
+
     get_runs(log, workflow, workflow_from_api, k)
 
 def get_artifacts(log, repo, run, access, k):
@@ -92,6 +101,10 @@ def get_artifacts(log, repo, run, access, k):
         log.append("Artifact saved %s" % artifact.id)
 
     k += 1
+    if k > MAX_PAGES:
+        log.append("Aborting artifact import at %s pages" % k)
+        return
+
     get_artifacts(log, repo, run, access, k)
 
 @login_required

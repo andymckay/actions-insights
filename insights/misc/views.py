@@ -88,8 +88,10 @@ def artifacts(request, pk):
         kwargs["expired"] = False
 
     order = ["-created_at"]
-    if sorting == "size":
-        order = ["-size_in_bytes", "-created_at"]
+    if sorting == "created_at" or sorting == "-created_at":
+        order = [sorting]
+    if sorting == "size_in_bytes" or sorting == "-size_in_bytes":
+        order = [sorting, "-created_at"]
 
     context = {
         "repo": repo,

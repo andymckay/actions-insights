@@ -22,19 +22,15 @@
         <a href="?filter=active-only&sort={{ request.GET.sort }}">Show active only</a> &bull;
         <a href="?filter=none">Show all</a>
     </div>
-    <div>
-        <a href="?sort=size&filter={{ request.GET.filter }}">Sort by size</a> &bull;
-        <a href="?sort=create&filter={{ request.GET.filter }}">Sort by creation</a>
-    </div>
 </div>
 
 <table class="table">
     <thead>
         <tr>
             <th>Name</th>
-            <th>Created</th>
+            <th>Created <a href="?sort=created_at&filter={{ request.GET.filter }}">🔼</a><a href="?sort=-created_at&filter={{ request.GET.filter }}">🔽</a></th>
             <th>Expires</th>
-            <th>Size</th>
+            <th>Size <a href="?sort=size_in_bytes&filter={{ request.GET.filter }}">🔼</a><a href="?sort=-size_in_bytes&filter={{ request.GET.filter }}">🔽</a></th>
             <th></th>
         </tr>
     </thead>

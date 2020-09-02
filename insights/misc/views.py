@@ -1,7 +1,7 @@
 import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Sum
+from django.db.models import Count, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -139,6 +139,8 @@ def runs(request, pk):
     context = {
         "repo": repo,
         "runs": Run.objects.filter(workflow__repo=repo).order_by(*order),
+        # Can't remember if this is the fastest way to do it.
+        "states": Run.objects.values('conclusion').distinct().annotate(Count('conclusion'))
     }
     for run in context["runs"]:
         run.total_artifact_size = Artifact.objects.filter(run=run).aggregate(

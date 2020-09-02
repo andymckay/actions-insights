@@ -1,3 +1,5 @@
+import math
+
 import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -7,8 +9,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from misc.importer import import_repo
 from misc.login import get_login_url
-from misc.models import Artifact, Repo, Run, Token, Workflow
-from misc.utils import request_headers
+from misc.models import Artifact, Repo, Run, Token, Workflow, Timing
+from misc.utils import request_headers, get_access_token_for_user
 
 
 def index(request):
@@ -162,6 +164,11 @@ def runs(request, pk):
 
 @login_required
 def workflow(request, pk):
+    rounding = {
+        "UBUNTU": 1,
+        "MACOS": 10,
+        "WINDOWS": 3
+    }
     workflow = get_object_or_404(Workflow, id=pk, repo__user=request.user)
     context = {
         "workflow": workflow,
@@ -171,11 +178,29 @@ def workflow(request, pk):
         "run_count": Run.objects.filter(workflow=workflow).count(),
         "elapsed_time_sum": Run.objects.filter(workflow=workflow).aggregate(Sum('elapsed'))["elapsed__sum"],
         "elapsed_time_avg": Run.objects.filter(workflow=workflow).aggregate(Avg('elapsed'))["elapsed__avg"],
+        "timings_seconds": {"UBUNTU": 0, "MACOS": 0, "WINDOWS": 0},
+        "timings_rounded": {"UBUNTU": 0, "MACOS": 0, "WINDOWS": 0},
+        "timings_multiplied": {"UBUNTU": 0, "MACOS": 0, "WINDOWS": 0},
+        "counts": {"UBUNTU": 0, "MACOS": 0, "WINDOWS": 0}
     }
+    # Because I'm a coward let's do this the easy way.
+    timing_queryset = Timing.objects.filter(run__workflow=workflow).values_list("os", "length", "jobs")
+    print(timing_queryset)
+    # A nice easy dict for the templates to understand.
+    for os, length_ms, jobs in timing_queryset:
+        print(os, length_ms, jobs)
+        seconds = length_ms / 1000
+        context["timings_seconds"][os] += int(seconds)
+        context["timings_rounded"][os] += math.ceil(seconds / 60.0)
+        context["timings_multiplied"][os] += math.ceil(seconds * rounding[os] / 60.0)
+        context["counts"][os] += jobs
     return render(request, "misc/workflow.html", context)
 
 @login_required
 def workflows(request, pk):
     workflows = Workflow.objects.filter(repo__id=pk, repo__user=request.user)
-    context = {"workflows": workflows, "repo": Repo.objects.get(pk=pk) }
+    context = {
+        "workflows": workflows,
+        "repo": Repo.objects.get(pk=pk),
+    }
     return render(request, "misc/workflows.html", context)

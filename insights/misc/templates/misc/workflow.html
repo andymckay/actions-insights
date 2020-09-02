@@ -46,6 +46,38 @@
             <th class="pr-2">Average elapsed time</th><td>{{ elapsed_time_avg }}</td>
         </tr>
     </table>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Ubuntu</th>
+            <th>MacOS</th>
+            <th>Windows</th>
+        </tr>
+        <tr>
+            <th>Seconds</th>
+            <td>{{ timings_seconds.UBUNTU }} secs</td>
+            <td>{{ timings_seconds.MACOS }} secs</td>
+            <td>{{ timings_seconds.WINDOWS }} secs</td>
+        </tr>
+        <tr>
+            <th>Rounded</th>
+            <td>{{ timings_rounded.UBUNTU }} mins</td>
+            <td>{{ timings_rounded.MACOS }} mins</td>
+            <td>{{ timings_rounded.WINDOWS }} mins</td>
+        </tr>
+        <tr>
+            <th>Multiplied</th>
+            <td>{{ timings_multiplied.UBUNTU }} mins</td>
+            <td>{{ timings_multiplied.MACOS }} mins</td>
+            <td>{{ timings_multiplied.WINDOWS }} mins</td>
+        </tr>
+        <tr>
+            <th>Counts</th>
+            <td>{{ counts.UBUNTU }}</td>
+            <td>{{ counts.MACOS }}</td>
+            <td>{{ counts.WINDOWS }}</td>
+        </tr>
+    </table>
 </div>
 
 {% endblock %}

@@ -1,29 +1,18 @@
-import uuid
-from urllib.parse import urlencode
-
 import requests
-from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from insights.settings import CLIENT_ID, CLIENT_SECRET, HOST
 from misc.importer import import_repo
+from misc.login import get_login_url
 from misc.models import Artifact, Repo, Run, Token, Workflow
 from misc.utils import request_headers
 
 
 def index(request):
-    base = "https://github.com/login/oauth/authorize?"
-    data = {
-        "client_id": CLIENT_ID,
-        "UUID": uuid.uuid4(),
-        "scope": "user",
-        "redirect_uri": HOST + "/oauth/redirect",
-    }
-    context = {"loginURL": base + urlencode(data), "repos": None, "counts": {}}
+    context = {"loginURL": get_login_url(), "repos": None, "counts": {}}
     if request.user.is_authenticated:
         context["repos"] = Repo.objects.filter(user=request.user)
         for repo in context["repos"]:
@@ -34,12 +23,6 @@ def index(request):
             ).count()
 
     return render(request, "misc/index.html", context)
-
-
-@login_required
-def logout_view(request):
-    logout(request)
-    return redirect("/")
 
 
 @login_required
@@ -84,53 +67,6 @@ def add_repo(request):
 
     context = {"added": added, "toAdd": toAdd}
     return render(request, "misc/add-repo.html", context)
-
-
-def oauth(request):
-    res = requests.post(
-        "https://github.com/login/oauth/access_token",
-        json={
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
-            "code": request.GET.get("code"),
-            "redirect_uri": HOST + "/oauth/redirect",
-        },
-        headers={"Content-Type": "application/json", "Accept": "application/json"},
-    )
-    res.raise_for_status()
-    data = res.json()
-
-    if not "access_token" in data:
-        print("Something went wrong here")
-        return redirect("/")
-
-    access_token = data["access_token"]
-
-    res = requests.get(
-        "https://api.github.com/user",
-        headers={
-            "Authorization": "token %s" % access_token,
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        },
-    )
-    res.raise_for_status()
-    data = res.json()
-
-    username = "github:" + data["login"]
-    existing = User.objects.filter(username=username)
-    if existing:
-        user = existing[0]
-    else:
-        user = User.objects.create_user("github:" + data["login"])
-
-    token = Token.objects.get_or_create(user=user)[0]
-    print("Access token updated.")
-    token.access = access_token
-    token.save()
-
-    login(request, user)
-    return redirect("/")
 
 
 @login_required
